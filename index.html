@@ -259,7 +259,7 @@ function sync() {
   const body = JSON.stringify(Object.assign({}, me(), { sentences: me().sentences.slice(0, 30), pub: pubOf(me()) }));
   // text/plain으로 보내야 Apps Script가 CORS 사전 요청 없이 받는다
   fetch(SYNC, { method: 'POST', body, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, keepalive: true })
-    .then(r => r.json()).then(j => { if (!j.ok) toast('⚠️ 기록 저장 실패'); RACE.at = 0; })
+    .then(r => r.json()).then(j => { if (j.removed) return removedByTeacher(DB.cur); if (!j.ok) toast('⚠️ 기록 저장 실패'); RACE.at = 0; })
     .catch(() => toast('⚠️ 인터넷 연결을 확인해 주세요 (기록은 이 기기에 보관 중)'));
 }
 async function loadRemote(name) {
@@ -271,9 +271,26 @@ let RACE = { list: null, at: 0 };
 async function fetchRace() {
   if (!SYNC) return [];
   if (RACE.list && Date.now() - RACE.at < 20000) return RACE.list;
-  try { RACE = { list: (await (await fetch(`${SYNC}?action=race`)).json()).racers || [], at: Date.now() }; }
-  catch (e) { RACE.list = RACE.list || []; }
+  try {
+    const j = await (await fetch(`${SYNC}?action=race`)).json();
+    RACE = { list: j.racers || [], at: Date.now() };
+    pruneDeleted(j.reset || 0, j.deleted || {});
+  } catch (e) { RACE.list = RACE.list || []; }
   return RACE.list;
+}
+// 선생님이 삭제한 기록(전체 초기화 이전 또는 개별 삭제 이전에 만든 레이서)은 이 기기에서도 지운다
+function pruneDeleted(reset, deleted) {
+  const gone = Object.values(DB.users).filter(u => (u.created || 0) < Math.max(reset, deleted[u.name] || 0)).map(u => u.id);
+  if (!gone.length) return;
+  const curGone = gone.includes(DB.cur);
+  gone.forEach(id => delete DB.users[id]);
+  if (curGone) removedByTeacher(null); else save();
+}
+function removedByTeacher(id) {
+  if (id) delete DB.users[id];
+  DB.cur = null; save();
+  alert('선생님이 레이스 기록을 초기화했어요.\n이름이나 닉네임을 입력해서 새로 출발해 주세요!');
+  VIEW = 'home'; renderLogin();
 }
 function toast(msg) {
   const t = document.createElement('div');
@@ -818,6 +835,7 @@ document.addEventListener('keydown', e => {
 });
 
 if (me()) go('home'); else renderLogin();
+if (SYNC && Object.keys(DB.users).length) fetchRace(); // 접속할 때 선생님의 기록 삭제 여부 확인
 </script>
 </body>
 </html>
