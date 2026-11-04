@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>고사성어 그랑프리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;600;800&family=Noto+Serif+KR:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky1:#3fb6ff; --sky2:#9be3ff; --grass:#5cc85a; --grass-d:#3c9b3e;
+  --yellow:#ffd23f; --yellow-d:#e0a800; --orange:#ff7a3d; --orange-d:#d4551d;
+  --red:#ff4d5e; --red-d:#c92a3a; --blue:#2f7cff; --blue-d:#1b55c4;
+  --green:#2fc37a; --green-d:#1f9157; --purple:#8b5cf6; --purple-d:#6236c9;
+  --ink:#1d2a44; --muted:#5d6b85; --card:#ffffff; --line:#e3e9f3;
+  --gold:#f5b400; --silver:#9aa6b8; --bronze:#c47a3d;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:'Noto Sans KR',sans-serif; color:var(--ink); min-height:100vh;
+  background:
+    radial-gradient(ellipse 120px 40px at 12% 14%, #fff 60%, transparent 62%),
+    radial-gradient(ellipse 90px 30px at 18% 11%, #fff 60%, transparent 62%),
+    radial-gradient(ellipse 140px 44px at 82% 22%, #fff 60%, transparent 62%),
+    radial-gradient(ellipse 80px 28px at 76% 19%, #fff 60%, transparent 62%),
+    linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 70%,#c9f1ff 100%);
+  background-attachment:fixed;
+}
+body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:70px;z-index:-1;
+  background:linear-gradient(180deg,var(--grass),var(--grass-d));}
+h1,h2,h3,.disp{font-family:'Jua',sans-serif;font-weight:400;letter-spacing:.5px}
+button{font-family:'Jua',sans-serif;cursor:pointer;border:0}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 110px}
+
+/* 상단 HUD */
+.top{position:sticky;top:0;z-index:20;padding:10px 16px;
+  background:rgba(20,40,80,.55);backdrop-filter:blur(8px)}
+.top-in{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{font-family:'Jua';font-size:24px;color:var(--yellow);text-shadow:0 3px 0 #b36b00,0 0 1px #000;
+  display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap}
+.logo small{font-size:13px;color:#fff;text-shadow:none;opacity:.85}
+.pills{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.pill{background:rgba(0,0,0,.45);color:#fff;border-radius:999px;padding:5px 12px;font-weight:800;font-size:14px;
+  display:flex;align-items:center;gap:6px;white-space:nowrap}
+.nav{display:flex;gap:6px;width:100%;margin-top:4px}
+.nav button{flex:1;background:rgba(255,255,255,.15);color:#fff;border-radius:12px;padding:8px 4px;font-size:16px}
+.nav button.on{background:var(--yellow);color:var(--ink);box-shadow:0 4px 0 var(--yellow-d)}
+
+/* 공통 버튼 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:16px;padding:12px 20px;
+  font-size:19px;color:#fff;background:var(--blue);box-shadow:0 6px 0 var(--blue-d);transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--blue-d)}
+.btn.y{background:var(--yellow);color:var(--ink);box-shadow:0 6px 0 var(--yellow-d)}
+.btn.o{background:var(--orange);box-shadow:0 6px 0 var(--orange-d)}
+.btn.r{background:var(--red);box-shadow:0 6px 0 var(--red-d)}
+.btn.g{background:var(--green);box-shadow:0 6px 0 var(--green-d)}
+.btn.p{background:var(--purple);box-shadow:0 6px 0 var(--purple-d)}
+.btn.w{background:#fff;color:var(--ink);box-shadow:0 6px 0 #c4cfdf}
+.btn.sm{font-size:15px;padding:8px 14px;border-radius:12px;box-shadow-width:4px}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.panel{background:var(--card);border-radius:24px;padding:20px;box-shadow:0 8px 0 rgba(20,40,80,.15),0 12px 30px rgba(20,40,80,.12);border:3px solid #fff}
+.sec-title{color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.25);font-size:28px;margin:22px 0 12px}
+.muted{color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* 로그인 */
+.hero{text-align:center;padding:30px 0 10px}
+.hero h1{font-size:clamp(40px,9vw,68px);margin:0;color:var(--yellow);
+  text-shadow:0 5px 0 #b35c00,0 9px 0 rgba(0,0,0,.2);-webkit-text-stroke:2px #7a3a00}
+.hero p{color:#fff;font-size:18px;font-weight:800;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.login{max-width:420px;margin:10px auto}
+.login label{display:block;font-weight:800;margin:10px 0 4px}
+.inp{width:100%;font-size:18px;padding:12px 14px;border-radius:14px;border:3px solid var(--line);font-family:inherit;outline:none}
+.inp:focus{border-color:var(--blue)}
+.users{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.uchip{background:#eef4ff;border-radius:999px;padding:6px 12px;font-weight:800;cursor:pointer;border:2px solid #d5e3ff;font-size:14px}
+
+/* 코스 카드 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.course{position:relative;overflow:hidden}
+.course .num{position:absolute;right:-6px;top:-14px;font-family:'Jua';font-size:84px;color:#eef3fb;z-index:0}
+.course>*{position:relative;z-index:1}
+.course h3{margin:0 0 4px;font-size:24px}
+.course .range{color:var(--muted);font-weight:600;font-size:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chip{font-size:12px;font-weight:800;border-radius:999px;padding:3px 10px;background:#eef1f6;color:var(--muted)}
+.chip.ok{background:#dcf7e8;color:#16804b}
+.chip.gold{background:#fff3c4;color:#8a6400}
+.bar{height:12px;background:#e9eef6;border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--yellow),var(--orange));border-radius:99px}
+.course .stamp-mini{position:absolute;right:14px;bottom:14px;z-index:2}
+
+/* 플래시카드 */
+.study-hud{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 10px;color:#fff;font-weight:800}
+.study-hud .big{font-family:'Jua';font-size:26px;text-shadow:0 3px 0 rgba(0,0,0,.25)}
+.flip{perspective:1400px;max-width:560px;margin:0 auto;height:470px;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.3,1.3,.5,1);transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:28px;
+  background:#fff;border:4px solid #fff;box-shadow:0 10px 0 rgba(20,40,80,.18),0 18px 40px rgba(20,40,80,.18);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;text-align:center}
+.face.front{background:linear-gradient(160deg,#fffdf2,#fff3c8)}
+.face.back{transform:rotateY(180deg);justify-content:flex-start;overflow:auto;text-align:left;align-items:stretch}
+.idiom{font-family:'Jua';font-size:clamp(46px,12vw,74px);line-height:1.1;color:var(--ink)}
+.hanja{font-family:'Noto Serif KR',serif;font-size:clamp(28px,7vw,40px);color:#b3441e;letter-spacing:6px;margin-top:6px}
+.tap{margin-top:22px;color:var(--muted);font-weight:700;font-size:14px}
+.step{display:flex;gap:10px;align-items:flex-start;margin:6px 0 10px}
+.step .k{flex:none;font-family:'Jua';font-size:13px;background:var(--ink);color:#fff;border-radius:8px;padding:3px 8px;margin-top:2px}
+.chars{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%}
+.ch{background:#fff7e6;border:2px solid #ffe0a3;border-radius:14px;padding:6px 2px;text-align:center}
+.ch b{display:block;font-family:'Noto Serif KR',serif;font-size:28px;color:#b3441e;line-height:1.2}
+.ch span{font-size:13px;font-weight:800}
+.arrow{text-align:center;color:var(--orange);font-weight:900;margin:2px 0}
+.lit{background:#eef5ff;border-radius:14px;padding:10px 12px;font-weight:800;text-align:center}
+.mean{background:#e6f9ef;border-radius:14px;padding:10px 12px;font-weight:800;font-size:17px;text-align:center;color:#14633b}
+.ex{background:#f5f1ff;border-radius:14px;padding:10px 12px;line-height:1.6}
+.ex mark{background:var(--yellow);border-radius:4px;padding:0 2px;font-weight:800}
+.back-head{display:flex;align-items:baseline;gap:10px;justify-content:center;margin-bottom:8px}
+.back-head .idiom{font-size:36px}
+.back-head .hanja{font-size:22px;margin:0;letter-spacing:3px}
+.answer-row{display:flex;gap:14px;justify-content:center;margin:26px auto 0;max-width:560px}
+.answer-row .btn{flex:1;font-size:21px;padding:16px 10px}
+.queue{display:flex;gap:4px;justify-content:center;margin:14px auto 0;flex-wrap:wrap;max-width:560px}
+.queue i{width:16px;height:16px;border-radius:5px;background:rgba(255,255,255,.5)}
+.queue i.k{background:var(--green)}
+.queue i.u{background:var(--red)}
+
+/* 퀴즈 */
+.qwrap{max-width:640px;margin:0 auto}
+.stage-tabs{display:flex;gap:6px;margin:18px 0 12px}
+.stage-tabs div{flex:1;text-align:center;font-family:'Jua';font-size:14px;padding:8px 4px;border-radius:12px;background:rgba(255,255,255,.35);color:#fff}
+.stage-tabs div.on{background:var(--yellow);color:var(--ink);box-shadow:0 4px 0 var(--yellow-d)}
+.stage-tabs div.done{background:var(--green)}
+.qnum{font-family:'Jua';color:var(--orange);font-size:18px}
+.qtext{font-size:21px;font-weight:800;margin:8px 0 16px;line-height:1.5}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;font-family:'Noto Sans KR';font-weight:700;font-size:17px;padding:14px 16px;border-radius:16px;background:#f3f6fb;border:3px solid #e1e8f3;color:var(--ink)}
+.opt:hover{border-color:var(--blue)}
+.opt.right{background:#dcf7e8;border-color:var(--green)}
+.opt.wrong{background:#ffe1e4;border-color:var(--red)}
+.cho{display:flex;gap:8px;justify-content:center;margin:6px 0 16px}
+.cho span{width:56px;height:56px;border-radius:14px;background:var(--ink);color:var(--yellow);font-family:'Jua';font-size:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 #0b1426}
+.fb{margin-top:16px;border-radius:16px;padding:14px 16px;font-weight:700;line-height:1.6}
+.fb.good{background:#dcf7e8;color:#14633b}
+.fb.bad{background:#ffe1e4;color:#8f1d2a}
+.fb h4{margin:0 0 4px;font-family:'Jua';font-weight:400;font-size:22px}
+textarea.inp{min-height:110px;resize:vertical;line-height:1.6}
+
+/* 결과 / 도장 */
+.result{text-align:center}
+.score{font-family:'Jua';font-size:84px;line-height:1;color:var(--orange);text-shadow:0 5px 0 #f3d1bd}
+.stamp{width:150px;height:150px;margin:16px auto;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'Jua';color:#fff;transform:rotate(-12deg);border:6px double rgba(255,255,255,.8);animation:pop .6s cubic-bezier(.3,1.6,.5,1)}
+.stamp b{font-size:40px;line-height:1}
+.stamp small{font-size:14px}
+.stamp.g3{background:radial-gradient(circle at 35% 30%,#ffe27a,var(--gold) 60%,#c78f00);box-shadow:0 0 0 6px #ffe9a3,0 10px 24px rgba(0,0,0,.2)}
+.stamp.g2{background:radial-gradient(circle at 35% 30%,#f2f5fa,var(--silver) 60%,#76839a);box-shadow:0 0 0 6px #e3e8f0,0 10px 24px rgba(0,0,0,.2)}
+.stamp.g1{background:radial-gradient(circle at 35% 30%,#f3c08f,var(--bronze) 60%,#8f5223);box-shadow:0 0 0 6px #f4d6b8,0 10px 24px rgba(0,0,0,.2)}
+.stamp.g0{background:#c9d1de;color:#56627a;transform:none;border-style:dashed}
+.mini{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Jua';color:#fff;font-size:15px;transform:rotate(-12deg)}
+.mini.g3{background:var(--gold)} .mini.g2{background:var(--silver)} .mini.g1{background:var(--bronze)}
+@keyframes pop{0%{transform:scale(2.4) rotate(-30deg);opacity:0}100%{transform:scale(1) rotate(-12deg);opacity:1}}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+.confetti i{position:absolute;top:-20px;width:10px;height:16px;border-radius:3px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.review-list{text-align:left;margin-top:12px}
+.review-list div{padding:8px 10px;border-radius:10px;margin:4px 0;font-weight:600;font-size:15px}
+.review-list .o{background:#eefbf3} .review-list .x{background:#fff0f2}
+
+/* 여정 */
+.journey{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start}
+.track-box{background:linear-gradient(180deg,#7fd57d,#4fb54f);border-radius:28px;border:4px solid #fff;box-shadow:0 8px 0 rgba(20,40,80,.15);overflow:hidden}
+.track-box svg{display:block;width:100%;height:auto}
+.rank{text-align:center}
+.rank .title{font-family:'Jua';font-size:30px;color:var(--purple)}
+.missions{display:grid;gap:8px;margin-top:12px}
+.mission{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:#f3f6fb;font-weight:700}
+.mission.clear{background:#e6f9ef}
+.mission.now{background:#fff6d6;outline:3px solid var(--yellow)}
+.mission .n{width:34px;height:34px;flex:none;border-radius:10px;background:var(--ink);color:#fff;font-family:'Jua';display:flex;align-items:center;justify-content:center}
+.mission .t{flex:1;font-size:14px}
+.mission .t small{display:block;color:var(--muted);font-weight:600}
+
+/* 대시보드 */
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tile{background:#fff;border-radius:20px;padding:14px;border:3px solid #fff;box-shadow:0 6px 0 rgba(20,40,80,.12)}
+.tile .lab{font-size:13px;font-weight:800;color:var(--muted)}
+.tile .val{font-family:'Jua';font-size:34px;line-height:1.2}
+.tile .val small{font-size:16px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:center}
+th{font-size:13px;color:var(--muted)}
+td.l{text-align:left}
+.wlist{display:grid;gap:6px}
+.witem{display:flex;justify-content:space-between;align-items:center;background:#fff4f5;border-radius:12px;padding:8px 12px;font-weight:700;cursor:pointer}
+.witem b{font-family:'Jua';font-size:18px}
+.sent{background:#f5f1ff;border-radius:12px;padding:10px 12px;margin:6px 0;line-height:1.5;font-size:15px}
+.sent .meta{font-size:12px;color:var(--muted);font-weight:700}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* 사전 */
+.dict{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.ditem{background:#fff;border-radius:18px;padding:14px;box-shadow:0 5px 0 rgba(20,40,80,.1)}
+.ditem h3{margin:0;font-size:24px}
+.ditem .hj{font-family:'Noto Serif KR';color:#b3441e;letter-spacing:3px}
+.ditem p{margin:6px 0 0;font-size:14px;line-height:1.5}
+
+.modal{position:fixed;inset:0;background:rgba(10,20,40,.55);z-index:60;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal .panel{max-width:520px;width:100%;max-height:90vh;overflow:auto}
+
+@media (max-width:760px){
+  .journey,.cols{grid-template-columns:1fr}
+  .tiles{grid-template-columns:repeat(2,1fr)}
+  .flip{height:500px}
+  .logo small{display:none}
+  .nav button{font-size:14px;white-space:nowrap}
+  .sec-title{font-size:23px}
+}
+table{min-width:560px}
+td,th{white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="top"></div>
+<div class="wrap" id="app"></div>
+<div id="layer"></div>
+
+<script src="data.js"></script>
+<script src="config.js"></script>
+<script>
+// ===== 데이터 준비 =====
+const SET_SIZE = 15;
+const DATA = IDIOMS.map((a, i) => ({ id: i, w: a[0], h: a[1], c: a[2].split('/'), l: a[3], m: a[4], e: a[5] }));
+const SETS = [];
+for (let i = 0; i < DATA.length; i += SET_SIZE) SETS.push(DATA.slice(i, i + SET_SIZE));
+const PASS = 70;
+const RANKS = [
+  [0, '출발선의 새내기'], [1, '루키 레이서'], [3, '주니어 레이서'], [5, '프로 레이서'],
+  [7, '에이스 레이서'], [9, '챔피언 후보'], [SETS.length, '고사성어 마스터 👑']
+];
+
+// ===== 저장소 =====
+const KEY = 'gosa_grandprix_v1';
+function loadDB() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || { users: {}, cur: null }; }
+  catch (e) { return { users: {}, cur: null }; }
+}
+let DB = loadDB();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch (e) {} }
+function me() { return DB.users[DB.cur]; }
+function rec(i) {
+  const u = me();
+  u.sets[i] = u.sets[i] || { studied: 0, studyCount: 0, best: 0, stamp: 0, attempts: [] };
+  return u.sets[i];
+}
+function stampOf(score) { return score >= 90 ? 3 : score >= 80 ? 2 : score >= PASS ? 1 : 0; }
+const STAMP_NAME = ['도전 중', '동 도장', '은 도장', '금 도장'];
+function stampCount(u) { return Object.values(u.sets).filter(s => s.stamp > 0).length; }
+function knownCount(u) { return Object.keys(u.known).length; }
+function rankOf(n) { let r = RANKS[0][1]; RANKS.forEach(([k, t]) => { if (n >= k) r = t; }); return r; }
+function today() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function logDay() { const u = me(); if (!u.days.includes(today())) u.days.push(today()); }
+
+// ===== 구글 시트 기록 (config.js의 SYNC_URL) =====
+const SYNC = typeof SYNC_URL === 'string' && SYNC_URL.trim();
+function sync() {
+  if (!SYNC || !me()) return;
+  // text/plain으로 보내야 Apps Script가 CORS 사전 요청 없이 받는다
+  fetch(SYNC, { method: 'POST', body: JSON.stringify(me()), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, keepalive: true })
+    .then(r => r.json()).then(j => toast(j.ok ? '☁️ 선생님께 기록이 저장됐어요' : '⚠️ 기록 저장 실패'))
+    .catch(() => toast('⚠️ 인터넷 연결을 확인해 주세요 (기록은 이 기기에 보관 중)'));
+}
+async function loadRemote(id, name) {
+  if (!SYNC) return null;
+  try {
+    const r = await fetch(`${SYNC}?action=load&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}`);
+    return (await r.json()).data;
+  } catch (e) { return null; }
+}
+function toast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;left:50%;bottom:86px;transform:translateX(-50%);background:rgba(20,30,50,.9);color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;z-index:70;font-size:14px;max-width:90vw;text-align:center';
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2600);
+}
+
+// ===== 유틸 =====
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const norm = s => String(s).replace(/[\s.,!?·'"]/g, '');
+const CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+const chosung = w => [...w].map(ch => { const c = ch.charCodeAt(0) - 0xAC00; return c >= 0 && c < 11172 ? CHO[Math.floor(c / 588)] : ch; });
+const hl = (text, w) => esc(text).split(esc(w)).join(`<mark>${esc(w)}</mark>`);
+let VIEW = 'home';
+
+// ===== 상단 바 =====
+function renderTop() {
+  const u = me();
+  if (!u) { $('#top').innerHTML = ''; return; }
+  const tabs = [['home', '🏁 코스'], ['journey', '🗺️ 여정'], ['dash', '📊 대시보드'], ['dict', '📖 사전']];
+  $('#top').innerHTML = `<div class="top"><div class="top-in">
+    <div class="logo" onclick="go('home')">🏎️ 고사성어 그랑프리 <small>사자성어 마스터 레이스</small></div>
+    <div class="pills">
+      <div class="pill" title="알아요로 체크한 고사성어">🪙 ${knownCount(u)}</div>
+      <div class="pill" title="획득한 완료 도장">🏅 ${stampCount(u)}/${SETS.length}</div>
+      <div class="pill" style="cursor:pointer" onclick="logout()" title="학생 바꾸기">👤 ${esc(u.name)} ↩</div>
+    </div>
+    <nav class="nav">${tabs.map(([k, t]) => `<button class="${VIEW === k ? 'on' : ''}" onclick="go('${k}')">${t}</button>`).join('')}</nav>
+  </div></div>`;
+}
+function go(v, arg) {
+  VIEW = v; renderTop(); window.scrollTo(0, 0);
+  ({ home: renderHome, journey: renderJourney, dash: renderDash, dict: renderDict })[v](arg);
+}
+
+// ===== 로그인 =====
+function renderLogin() {
+  renderTop();
+  const list = Object.values(DB.users);
+  $('#app').innerHTML = `
+  <div class="hero">
+    ${kartSVG(150, '#ffd23f')}
+    <h1>고사성어 그랑프리</h1>
+    <p>${DATA.length}개의 고사성어 · ${SETS.length}개 코스를 달려 고사성어 마스터가 되어 보자!</p>
+  </div>
+  <div class="panel login">
+    <h2 style="margin:0 0 6px">레이서 등록</h2>
+    <label>학번</label><input class="inp" id="sid" placeholder="예) 10101" inputmode="numeric">
+    <label>이름</label><input class="inp" id="sname" placeholder="예) 홍길동" onkeydown="if(event.key==='Enter')login()">
+    <div style="margin-top:16px"><button class="btn y" style="width:100%" onclick="login()">🏁 출발하기</button></div>
+    ${list.length ? `<div class="muted" style="margin-top:16px;font-weight:700;font-size:14px">이 기기에 저장된 레이서</div>
+      <div class="users">${list.map(u => `<span class="uchip" onclick="DB.cur='${esc(u.id)}';save();go('home')">${esc(u.id)} ${esc(u.name)}</span>`).join('')}</div>` : ''}
+  </div>`;
+}
+async function login() {
+  const id = $('#sid').value.trim(), name = $('#sname').value.trim();
+  if (!id || !name) { alert('학번과 이름을 모두 입력해 주세요.'); return; }
+  const key = id;
+  if (!DB.users[key] || DB.users[key].name !== name) {
+    // 다른 기기에서 공부한 기록이 있으면 불러온다
+    const btn = document.querySelector('.login .btn'); if (btn) { btn.disabled = true; btn.textContent = '기록 확인 중...'; }
+    const remote = await loadRemote(id, name);
+    DB.users[key] = remote || DB.users[key] || { id, name, known: {}, unknown: {}, wrong: {}, sentences: [], sets: {}, days: [], created: Date.now() };
+    if (remote) toast('☁️ 이전 학습 기록을 불러왔어요');
+  }
+  DB.users[key].name = name;
+  DB.cur = key; save(); go('home');
+}
+function logout() { DB.cur = null; save(); renderLogin(); }
+
+// ===== 홈: 코스 목록 =====
+function renderHome() {
+  const u = me();
+  const next = SETS.findIndex((_, i) => !(u.sets[i] && u.sets[i].stamp));
+  $('#app').innerHTML = `
+  <h2 class="sec-title">🏁 코스 선택</h2>
+  ${next >= 0 ? `<div class="panel" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px">
+    ${kartSVG(90, '#ff4d5e')}
+    <div style="flex:1;min-width:200px"><div class="muted" style="font-weight:800">다음 목표</div>
+      <h2 style="margin:2px 0">코스 ${next + 1} · ${SETS[next][0].w} ~ ${SETS[next].at(-1).w}</h2>
+      <div class="muted">학습하기 → 체크 문제 ${PASS}점 이상 → 완료 도장 획득!</div></div>
+    <button class="btn o" onclick="startStudy(${next})">▶ 바로 출발</button></div>`
+    : `<div class="panel" style="text-align:center;margin-bottom:16px"><h2>👑 모든 코스 완주! 고사성어 마스터!</h2></div>`}
+  <div class="grid">${SETS.map((set, i) => {
+    const r = u.sets[i] || {};
+    const k = set.filter(d => u.known[d.w]).length;
+    return `<div class="panel course">
+      <div class="num">${i + 1}</div>
+      <h3>코스 ${i + 1}</h3>
+      <div class="range">${set[0].w} ~ ${set.at(-1).w} (${set.length}개)</div>
+      <div class="chips">
+        <span class="chip ${r.studied ? 'ok' : ''}">${r.studied ? '✓ 학습 완료' : '학습 전'}</span>
+        <span class="chip ${r.best >= PASS ? 'gold' : ''}">최고 ${r.best || 0}점</span>
+      </div>
+      <div class="bar"><i style="width:${Math.round(k / set.length * 100)}%"></i></div>
+      <div class="muted" style="font-size:13px;font-weight:700;margin:4px 0 12px">알아요 ${k}/${set.length}</div>
+      <div class="row">
+        <button class="btn sm" onclick="startStudy(${i})">📚 학습하기</button>
+        <button class="btn sm o" ${r.studied ? '' : 'disabled'} onclick="startQuiz(${i})">✏️ 체크 문제</button>
+      </div>
+      ${r.stamp ? `<div class="stamp-mini mini g${r.stamp}">완료</div>` : ''}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ===== 학습하기 (플래시카드) =====
+let S = null;
+function startStudy(i) {
+  VIEW = 'study'; renderTop();
+  const set = SETS[i];
+  S = { set: i, queue: shuffle(set.map(d => d.id)), state: {}, flipped: false };
+  logDay(); save();
+  renderStudy();
+}
+function cardBack(d) {
+  return `<div class="back-head"><span class="idiom">${d.w}</span><span class="hanja">${d.h}</span></div>
+    <div class="step"><span class="k">① 한자 풀이</span></div>
+    <div class="chars">${d.c.map((c, k) => `<div class="ch"><b>${[...d.h][k]}</b><span>${esc(c)}</span></div>`).join('')}</div>
+    <div class="arrow">▼</div>
+    <div class="step"><span class="k">② 글자 뜻</span></div>
+    <div class="lit">${esc(d.l)}</div>
+    <div class="arrow">▼</div>
+    <div class="step"><span class="k">③ 의미</span></div>
+    <div class="mean">${esc(d.m)}</div>
+    <div class="step" style="margin-top:12px"><span class="k">④ 예문</span></div>
+    <div class="ex">${hl(d.e, d.w)}</div>`;
+}
+function renderStudy() {
+  if (!S.queue.length) return studyDone();
+  const d = DATA[S.queue[0]];
+  const set = SETS[S.set];
+  const done = set.filter(x => S.state[x.id] === 'k').length;
+  $('#app').innerHTML = `
+  <div class="study-hud">
+    <div><div class="big">코스 ${S.set + 1} 학습</div>남은 카드 ${S.queue.length}장</div>
+    <button class="btn w sm" onclick="if(confirm('학습을 그만두고 코스 목록으로 갈까요?'))go('home')">✕ 나가기</button>
+  </div>
+  <div class="bar" style="max-width:560px;margin:0 auto 14px;height:14px"><i style="width:${done / set.length * 100}%"></i></div>
+  <div class="flip ${S.flipped ? 'on' : ''}" id="flip" onclick="flipCard()">
+    <div class="flip-in">
+      <div class="face front">
+        <div class="idiom">${d.w}</div>
+        <div class="hanja">${d.h}</div>
+        <div class="tap">👆 카드를 눌러 뜻을 확인하세요 (스페이스바)</div>
+      </div>
+      <div class="face back">${cardBack(d)}</div>
+    </div>
+  </div>
+  <div class="answer-row">
+    <button class="btn r" onclick="answerCard(false)">🤔 아직 몰라요</button>
+    <button class="btn g" onclick="answerCard(true)">😎 알아요</button>
+  </div>
+  <div class="queue">${set.map(x => `<i class="${S.state[x.id] === 'k' ? 'k' : S.state[x.id] === 'u' ? 'u' : ''}"></i>`).join('')}</div>
+  <p style="text-align:center;color:#fff;font-weight:700;font-size:14px;text-shadow:0 1px 0 rgba(0,0,0,.3)">'아직 몰라요'를 누른 카드는 맨 뒤로 가서 다시 나와요. ← 몰라요 / → 알아요</p>`;
+}
+function flipCard() { S.flipped = !S.flipped; $('#flip').classList.toggle('on', S.flipped); }
+function answerCard(know) {
+  const u = me(), id = S.queue.shift(), d = DATA[id];
+  if (know) {
+    if (S.state[id] !== 'u') S.state[id] = 'k'; else S.state[id] = 'k';
+    u.known[d.w] = true;
+  } else {
+    S.state[id] = 'u';
+    u.unknown[d.w] = (u.unknown[d.w] || 0) + 1;
+    delete u.known[d.w];
+    S.queue.push(id);
+  }
+  S.flipped = false; save(); renderTop(); renderStudy();
+}
+function studyDone() {
+  const r = rec(S.set); r.studied = 1; r.studyCount++; save(); sync(); renderTop();
+  burst();
+  $('#app').innerHTML = `<div class="panel result" style="max-width:560px;margin:30px auto">
+    ${kartSVG(120, '#2fc37a')}
+    <h1 style="margin:6px 0">코스 ${S.set + 1} 학습 완주! 🎉</h1>
+    <p class="muted" style="font-weight:700">15개 고사성어를 모두 '알아요'로 만들었어요.<br>이제 체크 문제를 풀고 완료 도장을 받아 보세요!</p>
+    <div class="row" style="justify-content:center;margin-top:12px">
+      <button class="btn o" onclick="startQuiz(${S.set})">✏️ 체크 문제 풀기</button>
+      <button class="btn w" onclick="startStudy(${S.set})">🔁 한 번 더 학습</button>
+    </div></div>`;
+}
+
+// ===== 체크 문제 =====
+// 1단계 뜻 맞추기 6문항(1점) / 2단계 초성 힌트 쓰기 4문항(1.5점) / 3단계 힌트 없이 쓰기 3문항(2점) / 4단계 문장 만들기 2문항(2.5점)
+const STAGES = [
+  { n: 6, w: 1, name: '뜻 맞추기' }, { n: 4, w: 1.5, name: '초성 힌트 쓰기' },
+  { n: 3, w: 2, name: '힌트 없이 쓰기' }, { n: 2, w: 2.5, name: '문장 만들기' }
+];
+let Q = null;
+function startQuiz(i) {
+  VIEW = 'quiz'; renderTop();
+  const pool = shuffle(SETS[i]);
+  const qs = []; let p = 0;
+  STAGES.forEach((st, si) => {
+    for (let k = 0; k < st.n; k++) {
+      const d = pool[p++ % pool.length];
+      const q = { stage: si, d };
+      if (si === 0) q.opts = shuffle([d, ...shuffle(DATA.filter(x => x.id !== d.id)).slice(0, 3)]);
+      qs.push(q);
+    }
+  });
+  Q = { set: i, qs, i: 0, pts: 0, total: STAGES.reduce((a, s) => a + s.n * s.w, 0), log: [], answered: false };
+  logDay(); save();
+  renderQuiz();
+}
+function renderQuiz() {
+  if (Q.i >= Q.qs.length) return quizResult();
+  const q = Q.qs[Q.i], d = q.d, st = STAGES[q.stage];
+  let body = '';
+  if (q.stage === 0) {
+    body = `<div class="qtext">다음 고사성어의 뜻으로 알맞은 것은?<br><span class="disp" style="font-size:40px;color:var(--blue)">${d.w}</span> <span class="hanja" style="font-size:22px">${d.h}</span></div>
+      <div class="opts">${q.opts.map((o, k) => `<button class="opt" id="o${k}" onclick="checkMC(${k})">${k + 1}. ${esc(o.m)}</button>`).join('')}</div>`;
+  } else if (q.stage === 1 || q.stage === 2) {
+    body = `<div class="qtext">뜻을 읽고 알맞은 고사성어를 쓰세요.<br><span style="color:#14633b">“${esc(d.m)}”</span></div>
+      ${q.stage === 1 ? `<div class="cho">${chosung(d.w).map(c => `<span>${c}</span>`).join('')}</div>` : `<div class="muted" style="text-align:center;font-weight:700;margin-bottom:10px">💪 힌트 없음! 네 글자를 떠올려 보세요.</div>`}
+      <input class="inp" id="ans" maxlength="8" placeholder="고사성어 입력" style="text-align:center;font-size:26px;font-family:Jua" onkeydown="if(event.key==='Enter')checkWrite()">
+      <div style="margin-top:12px"><button class="btn" style="width:100%" onclick="checkWrite()">확인</button></div>`;
+  } else {
+    body = `<div class="qtext">‘<span style="color:var(--purple)">${d.w}</span>’을(를) 넣어 나만의 문장을 만들어 보세요.</div>
+      <div class="mean" style="margin-bottom:12px">뜻: ${esc(d.m)}</div>
+      <textarea class="inp" id="ans" placeholder="예) 상황을 떠올려 ${d.w}이(가) 들어간 문장을 써 보세요."></textarea>
+      <div class="muted" style="font-size:13px;font-weight:700;margin-top:4px">채점 기준: 고사성어를 정확히 넣고, 상황이 드러나는 완전한 문장(공백 제외 ${d.w.length + 8}자 이상)</div>
+      <div style="margin-top:12px"><button class="btn p" style="width:100%" onclick="checkSentence()">제출</button></div>`;
+  }
+  $('#app').innerHTML = `<div class="qwrap">
+    <div class="stage-tabs">${STAGES.map((s, k) => `<div class="${k === q.stage ? 'on' : k < q.stage ? 'done' : ''}">${k + 1}. ${s.name}</div>`).join('')}</div>
+    <div class="panel">
+      <div class="row" style="justify-content:space-between"><span class="qnum">문제 ${Q.i + 1} / ${Q.qs.length}</span><span class="chip">${st.w}점</span></div>
+      ${body}
+      <div id="fb"></div>
+    </div></div>`;
+  const a = $('#ans'); if (a) a.focus();
+}
+function feedback(ok, html) {
+  const q = Q.qs[Q.i], st = STAGES[q.stage], u = me();
+  if (ok) Q.pts += st.w; else u.wrong[q.d.w] = (u.wrong[q.d.w] || 0) + 1;
+  Q.log.push({ w: q.d.w, stage: q.stage, ok });
+  Q.answered = true; save();
+  $('#fb').innerHTML = `<div class="fb ${ok ? 'good' : 'bad'}"><h4>${ok ? '⭕ 정답! 부스터 획득 🔥' : '❌ 아쉬워요!'}</h4>${html}
+    <div style="margin-top:10px"><button class="btn ${ok ? 'g' : 'r'}" style="width:100%" id="nextBtn" onclick="nextQ()">다음 ▶</button></div></div>`;
+  $('#nextBtn').focus();
+}
+function nextQ() { Q.i++; Q.answered = false; renderQuiz(); }
+function checkMC(k) {
+  if (Q.answered) return;
+  const q = Q.qs[Q.i], right = q.opts.findIndex(o => o.id === q.d.id);
+  document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+  $('#o' + right).classList.add('right');
+  if (k !== right) $('#o' + k).classList.add('wrong');
+  feedback(k === right, `<b>${q.d.w}</b> : ${esc(q.d.m)}`);
+}
+function checkWrite() {
+  if (Q.answered) return;
+  const q = Q.qs[Q.i], v = norm($('#ans').value);
+  if (!v) { $('#ans').focus(); return; }
+  $('#ans').disabled = true;
+  const ok = v === q.d.w || v === q.d.h;
+  feedback(ok, `정답: <b>${q.d.w}(${q.d.h})</b> — ${esc(q.d.l)}${ok ? '' : `<br>내 답: ${esc($('#ans').value)}`}`);
+}
+function checkSentence() {
+  if (Q.answered) return;
+  const q = Q.qs[Q.i], raw = $('#ans').value.trim(), v = norm(raw);
+  if (!raw) { $('#ans').focus(); return; }
+  $('#ans').disabled = true;
+  const has = v.includes(q.d.w), long = v.length >= q.d.w.length + 8;
+  const ok = has && long;
+  const u = me();
+  u.sentences.unshift({ w: q.d.w, s: raw, ok, t: Date.now() });
+  u.sentences = u.sentences.slice(0, 100);
+  const why = !has ? `문장에 ‘${q.d.w}’이(가) 정확히 들어가지 않았어요.` : !long ? '문장이 너무 짧아요. 상황이 드러나게 더 자세히 써 보세요.' : '고사성어를 넣어 멋진 문장을 완성했어요!';
+  feedback(ok, `${why}<br><span style="font-weight:600">📌 예시: ${hl(q.d.e, q.d.w)}</span>`);
+}
+function quizResult() {
+  const score = Math.round(Q.pts / Q.total * 100), g = stampOf(score);
+  const r = rec(Q.set);
+  const prevStamp = r.stamp;
+  r.attempts.push({ t: Date.now(), score });
+  r.best = Math.max(r.best, score);
+  r.stamp = Math.max(r.stamp, g);
+  save(); sync(); renderTop();
+  if (g) burst();
+  const newStamp = g && g > prevStamp;
+  $('#app').innerHTML = `<div class="panel result" style="max-width:600px;margin:24px auto">
+    <h2 style="margin:0">코스 ${Q.set + 1} 체크 문제 결과</h2>
+    <div class="score">${score}<span style="font-size:30px">점</span></div>
+    <div class="stamp g${g}"><b>${g ? '완료' : '재도전'}</b><small>${g ? STAMP_NAME[g] : PASS + '점부터 도장!'}</small></div>
+    <p style="font-weight:800">${g ? (newStamp ? '🎉 새 완료 도장을 획득했어요! 여정에서 확인해 보세요.' : '이미 받은 도장보다 높지 않지만 훌륭해요!') : `아쉬워요! ${PASS}점 이상이면 완료 도장을 받을 수 있어요.`}</p>
+    <div class="review-list">${Q.log.map(l => `<div class="${l.ok ? 'o' : 'x'}">${l.ok ? '⭕' : '❌'} [${STAGES[l.stage].name}] ${l.w} — ${esc(DATA.find(d => d.w === l.w).m)}</div>`).join('')}</div>
+    <div class="row" style="justify-content:center;margin-top:16px">
+      ${g ? `<button class="btn p" onclick="go('journey')">🗺️ 내 여정 보기</button>` : `<button class="btn" onclick="startStudy(${Q.set})">📚 다시 학습</button>`}
+      <button class="btn o" onclick="startQuiz(${Q.set})">🔁 다시 도전</button>
+      <button class="btn w" onclick="go('home')">🏁 코스 목록</button>
+    </div></div>`;
+}
+
+// ===== 여정 =====
+function renderJourney() {
+  const u = me(), n = stampCount(u);
+  const cur = SETS.findIndex((_, i) => !(u.sets[i] && u.sets[i].stamp));
+  const nextRank = RANKS.find(([k]) => k > n);
+  $('#app').innerHTML = `
+  <h2 class="sec-title">🗺️ 고사성어 마스터로 가는 여정</h2>
+  <div class="journey">
+    <div class="track-box">${trackSVG()}</div>
+    <div>
+      <div class="panel rank">
+        <div class="muted" style="font-weight:800">현재 칭호</div>
+        <div class="title">${rankOf(n)}</div>
+        <div style="margin:10px 0 6px" class="bar"><i style="width:${n / SETS.length * 100}%"></i></div>
+        <div class="muted" style="font-weight:700">완료 도장 ${n} / ${SETS.length}${nextRank ? ` · ${nextRank[0] - n}개 더 모으면 ‘${nextRank[1]}’` : ''}</div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h3 style="margin:0">🎯 미션 체크포인트</h3>
+        <div class="missions">${SETS.map((set, i) => {
+          const r = u.sets[i] || {};
+          const cls = r.stamp ? 'clear' : i === cur ? 'now' : '';
+          return `<div class="mission ${cls}">
+            <div class="n">${i + 1}</div>
+            <div class="t">${set[0].w} ~ ${set.at(-1).w}
+              <small>${r.studied ? '✓' : '○'} 학습 완주 · ${r.stamp ? '✓' : '○'} 문제 ${PASS}점 이상 ${r.best ? `(최고 ${r.best}점)` : ''}</small></div>
+            ${r.stamp ? `<div class="mini g${r.stamp}">완료</div>` : i === cur ? `<button class="btn sm o" onclick="startStudy(${i})">출발</button>` : '🔒'}
+          </div>`;
+        }).join('')}</div>
+      </div>
+    </div>
+  </div>`;
+  placeCheckpoints();
+}
+const TRACK = 'M200 1040 C40 1000 40 900 200 880 S360 760 200 720 S40 600 200 560 S360 440 200 400 S40 280 200 240 S330 140 200 90';
+function trackSVG() {
+  return `<svg viewBox="0 0 400 1100" id="trk" aria-label="여정 지도">
+    <defs><pattern id="chk" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#111"/><rect x="8" y="8" width="8" height="8" fill="#111"/><rect x="8" width="8" height="8" fill="#fff"/><rect y="8" width="8" height="8" fill="#fff"/></pattern></defs>
+    ${[[60,180],[340,330],[50,640],[350,980],[330,560],[70,1000]].map(([x,y])=>`<g transform="translate(${x} ${y})"><rect x="-4" y="0" width="8" height="22" fill="#8a5a2b"/><circle cy="-6" r="22" fill="#2f9e44"/><circle cx="-10" cy="4" r="14" fill="#37b24d"/></g>`).join('')}
+    <path d="${TRACK}" fill="none" stroke="#fff" stroke-width="66" stroke-linecap="round"/>
+    <path d="${TRACK}" fill="none" stroke="#ff4d5e" stroke-width="66" stroke-dasharray="22 22" stroke-linecap="butt"/>
+    <path d="${TRACK}" fill="none" stroke="#596579" stroke-width="54" stroke-linecap="round" id="road"/>
+    <path d="${TRACK}" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="18 16" opacity=".8"/>
+    <g transform="translate(200 1040)"><rect x="-30" y="-10" width="60" height="20" fill="url(#chk)"/><text y="44" text-anchor="middle" font-family="Jua" font-size="22" fill="#fff" stroke="#1d2a44" stroke-width="4" paint-order="stroke">START</text></g>
+    <g transform="translate(200 60)"><rect x="-70" y="-14" width="140" height="22" fill="url(#chk)"/><rect x="-74" y="-14" width="6" height="56" fill="#ddd"/><rect x="68" y="-14" width="6" height="56" fill="#ddd"/>
+      <text y="-24" text-anchor="middle" font-family="Jua" font-size="26" fill="#ffd23f" stroke="#7a3a00" stroke-width="5" paint-order="stroke">👑 MASTER</text></g>
+    <g id="cps"></g>
+  </svg>`;
+}
+function placeCheckpoints() {
+  const u = me(), road = $('#road'), L = road.getTotalLength(), g = $('#cps');
+  const cur = SETS.findIndex((_, i) => !(u.sets[i] && u.sets[i].stamp));
+  let html = '';
+  SETS.forEach((_, i) => {
+    const p = road.getPointAtLength(L * (i + 1) / (SETS.length + 1));
+    const r = u.sets[i] || {}, col = ['#ffffff', '#c47a3d', '#9aa6b8', '#f5b400'][r.stamp || 0];
+    html += `<g transform="translate(${p.x} ${p.y})" style="cursor:pointer" onclick="startStudy(${i})">
+      <circle r="26" fill="${col}" stroke="#1d2a44" stroke-width="4"/>
+      <text y="9" text-anchor="middle" font-family="Jua" font-size="${r.stamp ? 15 : 24}" fill="${r.stamp ? '#fff' : '#1d2a44'}">${r.stamp ? '완료' : i + 1}</text>
+      ${r.stamp ? `<text x="20" y="-18" font-size="20">✅</text>` : ''}</g>`;
+  });
+  const pos = road.getPointAtLength(cur < 0 ? L : L * (cur + 0.5) / (SETS.length + 1));
+  html += `<g transform="translate(${pos.x - 40} ${pos.y - 52})">${kartSVG(80, '#ffd23f', true)}</g>`;
+  g.innerHTML = html;
+}
+// 오리지널 카트 일러스트
+function kartSVG(w, color) {
+  const s = `<svg width="${w}" height="${w * 0.75}" viewBox="0 0 120 90" aria-hidden="true">
+    <ellipse cx="60" cy="84" rx="48" ry="5" fill="rgba(0,0,0,.2)"/>
+    <rect x="14" y="56" width="22" height="26" rx="6" fill="#1d2a44"/><rect x="84" y="56" width="22" height="26" rx="6" fill="#1d2a44"/>
+    <path d="M18 62 Q20 44 40 42 L80 42 Q100 44 102 62 L104 72 Q60 80 16 72 Z" fill="${color}" stroke="#1d2a44" stroke-width="3"/>
+    <rect x="44" y="64" width="32" height="8" rx="3" fill="#1d2a44"/><rect x="24" y="64" width="12" height="6" rx="2" fill="#ff4d5e"/><rect x="84" y="64" width="12" height="6" rx="2" fill="#ff4d5e"/>
+    <circle cx="60" cy="28" r="20" fill="${color}" stroke="#1d2a44" stroke-width="3"/>
+    <path d="M44 26 Q60 16 76 26 L76 32 Q60 26 44 32 Z" fill="#9be3ff" stroke="#1d2a44" stroke-width="2.5"/>
+    <circle cx="70" cy="18" r="4" fill="#fff" opacity=".8"/>
+  </svg>`;
+  return s;
+}
+
+// ===== 대시보드 =====
+function renderDash() {
+  const u = me();
+  const att = Object.values(u.sets).flatMap(s => s.attempts);
+  const avg = att.length ? Math.round(att.reduce((a, b) => a + b.score, 0) / att.length) : 0;
+  const studies = Object.values(u.sets).reduce((a, s) => a + (s.studyCount || 0), 0);
+  const wrong = Object.entries(u.wrong).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  const hard = Object.entries(u.unknown).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  $('#app').innerHTML = `
+  <h2 class="sec-title">📊 ${esc(u.name)} 레이서의 학습 대시보드</h2>
+  <div class="tiles">
+    <div class="tile"><div class="lab">🪙 알아요 고사성어</div><div class="val">${knownCount(u)}<small>/${DATA.length}</small></div><div class="bar"><i style="width:${knownCount(u) / DATA.length * 100}%"></i></div></div>
+    <div class="tile"><div class="lab">🏅 완료 도장</div><div class="val">${stampCount(u)}<small>/${SETS.length}</small></div><div class="muted" style="font-size:13px;font-weight:700">${rankOf(stampCount(u))}</div></div>
+    <div class="tile"><div class="lab">✏️ 문제 평균 점수</div><div class="val">${avg}<small>점</small></div><div class="muted" style="font-size:13px;font-weight:700">도전 ${att.length}회</div></div>
+    <div class="tile"><div class="lab">📅 학습한 날</div><div class="val">${u.days.length}<small>일</small></div><div class="muted" style="font-size:13px;font-weight:700">카드 학습 ${studies}회</div></div>
+  </div>
+  <div class="panel" style="margin-top:16px;overflow-x:auto">
+    <h3 style="margin:0 0 8px">🏁 코스별 진행 상황</h3>
+    <table><thead><tr><th>코스</th><th class="l">범위</th><th>알아요</th><th>학습</th><th>도전</th><th>최근</th><th>최고</th><th>도장</th></tr></thead><tbody>
+    ${SETS.map((set, i) => {
+      const r = u.sets[i] || { attempts: [] }, k = set.filter(d => u.known[d.w]).length, last = r.attempts.at(-1);
+      return `<tr><td><b>${i + 1}</b></td><td class="l">${set[0].w}~${set.at(-1).w}</td>
+        <td><div class="bar" style="width:70px;margin:auto"><i style="width:${k / set.length * 100}%"></i></div><small>${k}/${set.length}</small></td>
+        <td>${r.studyCount || 0}회</td><td>${r.attempts.length}회</td><td>${last ? last.score + '점' : '-'}</td><td><b>${r.best || '-'}</b></td>
+        <td>${r.stamp ? `<span class="chip gold">${STAMP_NAME[r.stamp]}</span>` : '-'}</td></tr>`;
+    }).join('')}
+    </tbody></table>
+  </div>
+  <div class="cols" style="margin-top:16px">
+    <div class="panel"><h3 style="margin:0 0 8px">❌ 문제에서 자주 틀린 고사성어</h3>
+      ${wrong.length ? `<div class="wlist">${wrong.map(([w, c]) => `<div class="witem" onclick="showCard('${w}')"><b>${w}</b><span class="chip">${c}회 오답</span></div>`).join('')}</div>` : '<p class="muted">아직 틀린 문제가 없어요 👍</p>'}
+    </div>
+    <div class="panel"><h3 style="margin:0 0 8px">🤔 ‘아직 몰라요’가 많았던 고사성어</h3>
+      ${hard.length ? `<div class="wlist">${hard.map(([w, c]) => `<div class="witem" style="background:#fff8e6" onclick="showCard('${w}')"><b>${w}</b><span class="chip">${c}회</span></div>`).join('')}</div>` : '<p class="muted">기록이 없어요.</p>'}
+    </div>
+  </div>
+  <div class="panel" style="margin-top:16px"><h3 style="margin:0 0 8px">✍️ 내가 만든 문장</h3>
+    ${u.sentences.length ? u.sentences.slice(0, 12).map(s => `<div class="sent"><div class="meta">${s.ok ? '⭕' : '❌'} ${s.w} · ${new Date(s.t).toLocaleDateString('ko-KR')}</div>${hl(s.s, s.w)}</div>`).join('') : '<p class="muted">체크 문제 4단계에서 만든 문장이 여기에 모여요.</p>'}
+  </div>
+  <div class="panel" style="margin-top:16px">
+    <h3 style="margin:0 0 8px">👩‍🏫 선생님 제출용</h3>
+    <p class="muted" style="margin-top:0">${SYNC ? '학습을 마치거나 문제를 풀 때마다 기록이 선생님께 자동으로 전송돼요. CSV로 따로 저장할 수도 있어요.' : '학습 기록은 이 기기(브라우저)에 저장돼요. 아래 버튼으로 기록을 CSV 파일로 저장해 제출할 수 있어요.'}</p>
+    <div class="row">
+      <button class="btn sm g" onclick="exportCSV(false)">📥 내 기록 CSV</button>
+      <button class="btn sm" onclick="exportCSV(true)">📥 이 기기 전체 학생 CSV</button>
+      <button class="btn sm r" onclick="resetMe()">🗑️ 내 기록 초기화</button>
+    </div>
+  </div>`;
+}
+function showCard(w) {
+  const d = DATA.find(x => x.w === w);
+  $('#layer').innerHTML = `<div class="modal" onclick="if(event.target===this)this.remove()"><div class="panel">${cardBack(d)}
+    <div style="margin-top:14px"><button class="btn w" style="width:100%" onclick="this.closest('.modal').remove()">닫기</button></div></div></div>`;
+}
+function exportCSV(all) {
+  const users = all ? Object.values(DB.users) : [me()];
+  const rows = [['학번', '이름', '코스', '범위', '알아요(개)', '학습횟수', '도전횟수', '최근점수', '최고점수', '도장']];
+  users.forEach(u => SETS.forEach((set, i) => {
+    const r = u.sets[i] || { attempts: [] };
+    rows.push([u.id, u.name, i + 1, `${set[0].w}~${set.at(-1).w}`, set.filter(d => u.known[d.w]).length, r.studyCount || 0, r.attempts.length,
+      r.attempts.length ? r.attempts.at(-1).score : '', r.best || '', r.stamp ? STAMP_NAME[r.stamp] : '']);
+  }));
+  const csv = '﻿' + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = all ? `고사성어_전체학생_${today()}.csv` : `고사성어_${me().id}_${me().name}_${today()}.csv`;
+  a.click();
+}
+function resetMe() {
+  if (!confirm('정말 내 학습 기록을 모두 지울까요? 되돌릴 수 없어요.')) return;
+  const u = me();
+  Object.assign(u, { known: {}, unknown: {}, wrong: {}, sentences: [], sets: {}, days: [] });
+  save(); go('dash');
+}
+
+// ===== 사전 =====
+function renderDict(q) {
+  q = q || '';
+  const list = DATA.filter(d => !q || [d.w, d.h, d.m, d.l].some(t => t.includes(q)));
+  const u = me();
+  $('#app').innerHTML = `
+  <h2 class="sec-title">📖 고사성어 사전 (${DATA.length}개)</h2>
+  <input class="inp" id="dq" value="${esc(q)}" placeholder="고사성어, 한자, 뜻으로 검색" oninput="renderDictList(this.value)" style="margin-bottom:14px">
+  <div class="dict" id="dlist"></div>`;
+  renderDictList(q);
+}
+function renderDictList(q) {
+  const u = me();
+  const list = DATA.filter(d => !q || [d.w, d.h, d.m, d.l].some(t => t.includes(q)));
+  $('#dlist').innerHTML = list.map(d => `<div class="ditem" style="cursor:pointer" onclick="showCard('${d.w}')">
+    <div class="row" style="justify-content:space-between"><h3>${d.w}</h3>${u.known[d.w] ? '<span class="chip ok">알아요</span>' : ''}</div>
+    <div class="hj">${d.h}</div><p><b>${esc(d.m)}</b></p><p class="muted">코스 ${Math.floor(d.id / SET_SIZE) + 1}</p></div>`).join('') || '<p style="color:#fff">검색 결과가 없어요.</p>';
+}
+
+// ===== 효과 =====
+function burst() {
+  const c = document.createElement('div'); c.className = 'confetti';
+  const cols = ['#ffd23f', '#ff4d5e', '#2f7cff', '#2fc37a', '#8b5cf6', '#ff7a3d'];
+  for (let i = 0; i < 80; i++) {
+    const p = document.createElement('i');
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.background = cols[i % cols.length];
+    p.style.animationDuration = 1.6 + Math.random() * 1.8 + 's';
+    p.style.animationDelay = Math.random() * .4 + 's';
+    c.appendChild(p);
+  }
+  document.body.appendChild(c); setTimeout(() => c.remove(), 4200);
+}
+
+// ===== 키보드 =====
+document.addEventListener('keydown', e => {
+  if (VIEW !== 'study' || !S || !S.queue.length || e.target.tagName === 'INPUT') return;
+  if (e.code === 'Space') { e.preventDefault(); flipCard(); }
+  if (e.key === 'ArrowRight') answerCard(true);
+  if (e.key === 'ArrowLeft') answerCard(false);
+});
+
+// ===== 시작 =====
+if (me()) go('home'); else renderLogin();
+</script>
+</body>
+</html>
