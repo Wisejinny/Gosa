@@ -3,143 +3,195 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>그랑프리 교사 집계</title>
+<meta name="robots" content="noindex">
+<title>그랑프리 교사 대시보드</title>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#1d2a44;--muted:#5d6b85;--line:#e3e9f3;--yellow:#ffd23f;--blue:#2f7cff;--green:#2fc37a;--red:#ff4d5e;--gold:#f5b400;--silver:#9aa6b8;--bronze:#c47a3d}
+:root{--ink:#1d2a44;--muted:#5d6b85;--line:#e3e9f3;--yellow:#ffd23f;--blue:#2f7cff;--green:#2fc37a;--red:#ff4d5e}
 *{box-sizing:border-box}
-body{margin:0;font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:linear-gradient(180deg,#3fb6ff,#c9f1ff);min-height:100vh}
+body{margin:0;font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:linear-gradient(180deg,#1d2a44,#33507e);min-height:100vh}
 h1,h2,h3,button{font-family:'Jua',sans-serif;font-weight:400}
-.wrap{max-width:1200px;margin:0 auto;padding:16px}
-h1{color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.25);margin:10px 0 14px}
-.panel{background:#fff;border-radius:20px;padding:18px;box-shadow:0 6px 0 rgba(20,40,80,.12);margin-bottom:14px}
+.wrap{max-width:1280px;margin:0 auto;padding:16px}
+.head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:#fff;margin:6px 0 14px}
+.head h1{margin:0;color:var(--yellow);text-shadow:0 3px 0 #7a4a00}
+.live{font-family:'Jua';background:var(--red);color:#fff;border-radius:999px;padding:3px 12px;font-size:14px;animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.45}}
+.panel{background:#fff;border-radius:20px;padding:18px;box-shadow:0 6px 0 rgba(0,0,0,.18);margin-bottom:14px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .inp{font-size:16px;padding:10px 12px;border-radius:12px;border:3px solid var(--line);font-family:inherit}
 .btn{border:0;cursor:pointer;border-radius:12px;padding:10px 16px;font-size:16px;color:#fff;background:var(--blue);box-shadow:0 4px 0 #1b55c4}
 .btn.g{background:var(--green);box-shadow:0 4px 0 #1f9157}
-.tabs button{border:0;cursor:pointer;border-radius:999px;padding:6px 14px;font-size:15px;background:#eef1f6;color:var(--ink)}
-.tabs button.on{background:var(--yellow);box-shadow:0 3px 0 #e0a800}
-.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.btn.w{background:#eef1f6;color:var(--ink);box-shadow:0 4px 0 #c9d2e0}
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .tile{background:#f6f8fc;border-radius:14px;padding:12px}
-.tile b{display:block;font-family:'Jua';font-size:30px}
+.tile b{display:block;font-family:'Jua';font-size:28px}
 .tile span{font-size:13px;font-weight:800;color:var(--muted)}
+.dist{display:flex;gap:4px;align-items:flex-end;height:90px;margin-top:8px}
+.dist div{flex:1;background:linear-gradient(180deg,#ffd23f,#ff7a3d);border-radius:6px 6px 0 0;position:relative;min-height:2px}
+.dist div span{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:11px;font-weight:800}
+.dist-l{display:flex;gap:4px;font-size:10px;color:var(--muted);font-weight:700}
+.dist-l div{flex:1;text-align:center}
 .scroll{overflow-x:auto}
-table{border-collapse:collapse;width:100%;min-width:900px;font-size:14px}
+table{border-collapse:collapse;width:100%;min-width:1100px;font-size:14px}
 th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
 th{font-size:12px;color:var(--muted);cursor:pointer;position:sticky;top:0;background:#fff}
 td.l{text-align:left}
 tbody tr{cursor:pointer} tbody tr:hover{background:#f5f9ff}
-.s{display:inline-block;min-width:34px;border-radius:8px;padding:2px 4px;font-weight:800;font-size:13px}
-.s3{background:#fff3c4;color:#8a6400}.s2{background:#eceff4;color:#4c5870}.s1{background:#f8e3d0;color:#7a4317}.s0{background:#ffe1e4;color:#8f1d2a}
-.bar{height:8px;background:#e9eef6;border-radius:99px;overflow:hidden;width:80px;display:inline-block;vertical-align:middle}
+.dots{display:inline-flex;gap:2px;vertical-align:middle}
+.dots i{width:9px;height:14px;border-radius:3px;background:#e9eef6;display:block}
+.dots i.big{width:14px}
+.dots i.gap{margin-left:4px}
+.bar{height:8px;background:#e9eef6;border-radius:99px;overflow:hidden;width:90px;display:inline-block;vertical-align:middle}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,#ffd23f,#ff7a3d)}
 .muted{color:var(--muted)}
+.lv{font-family:'Jua';background:var(--ink);color:var(--yellow);border-radius:8px;padding:1px 7px;font-size:13px}
+.new{background:#dcf7e8;color:#16804b;border-radius:999px;font-size:11px;padding:1px 6px;font-weight:800}
 .modal{position:fixed;inset:0;background:rgba(10,20,40,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
-.modal .panel{max-width:620px;width:100%;max-height:90vh;overflow:auto}
+.modal .panel{max-width:720px;width:100%;max-height:90vh;overflow:auto}
 .sent{background:#f5f1ff;border-radius:10px;padding:8px 10px;margin:5px 0;font-size:14px}
-@media(max-width:700px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;font-weight:700;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:3px}
+@media(max-width:800px){.tiles{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>👩‍🏫 고사성어 그랑프리 · 교사 집계</h1>
+  <div class="head"><h1>👩‍🏫 고사성어 그랑프리 · 교사 대시보드</h1><span class="live" id="live" hidden>● LIVE 30초마다 자동 갱신</span></div>
   <div class="panel row" id="loginBox">
-    <input class="inp" id="key" type="password" placeholder="교사 비밀번호 (Code.gs의 TEACHER_KEY)" style="flex:1;min-width:220px" onkeydown="if(event.key==='Enter')load()">
-    <button class="btn" onclick="load()">불러오기</button>
+    <input class="inp" id="key" type="password" placeholder="교사 비밀번호 (Code.gs의 TEACHER_KEY)" style="flex:1;min-width:220px" onkeydown="if(event.key==='Enter')start()">
+    <button class="btn" onclick="start()">대시보드 열기</button>
     <span class="muted" id="msg"></span>
   </div>
   <div id="out"></div>
 </div>
 <script src="data.js"></script>
 <script src="config.js"></script>
+<script src="game.js"></script>
 <script>
-const SETS = Math.ceil(IDIOMS.length / 15);
-const STAMP = ['', '동', '은', '금'];
-let ALL = [], CLS = '전체', SORT = { k: 'id', d: 1 };
+const LS = 'gp_teacher_key';
+const DOT = ['#e9eef6', '#d08a4c', '#b8c2d0', '#f5b400', '#8b5cf6'];
+let KEY = '', ALL = [], SORT = { k: 'p', d: -1 }, Q = '', TIMER = null, PREV = {};
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const clsOf = id => String(id).length === 5 ? Number(String(id).slice(1, 3)) + '반' : '기타';
 
 function stat(u) {
   const sets = u.sets || {};
   const att = Object.values(sets).flatMap(s => s.attempts || []);
+  const m = medalCounts(u), p = progressOf(u), t = tierOf(u);
   return {
-    id: String(u.id), name: u.name, cls: clsOf(u.id),
-    known: Object.keys(u.known || {}).length,
-    stamps: Object.values(sets).filter(s => s.stamp > 0).length,
+    name: u.name, p, t, loc: locationOf(p), known: Object.keys(u.known || {}).length,
+    m, medalPts: m[1] + m[2] * 2 + m[3] * 3 + m[4] * 4,
     avg: att.length ? Math.round(att.reduce((a, b) => a + b.score, 0) / att.length) : null,
     tries: att.length, days: (u.days || []).length,
-    best: Array.from({ length: SETS }, (_, i) => sets[i] ? sets[i] : null),
     saved: u.saved ? new Date(u.saved) : null, raw: u
   };
 }
-async function load() {
-  const key = document.getElementById('key').value.trim();
+function start() {
+  KEY = document.getElementById('key').value.trim();
+  if (!SYNC_URL) { document.getElementById('msg').textContent = 'config.js에 SYNC_URL이 비어 있어요.'; return; }
+  load(true);
+}
+async function load(first) {
   const msg = document.getElementById('msg');
-  if (!SYNC_URL) { msg.textContent = 'config.js에 SYNC_URL이 비어 있어요.'; return; }
-  msg.textContent = '불러오는 중...';
+  if (first) msg.textContent = '불러오는 중...';
   try {
-    const j = await (await fetch(`${SYNC_URL}?action=summary&key=${encodeURIComponent(key)}`)).json();
+    const j = await (await fetch(`${SYNC_URL}?action=summary&key=${encodeURIComponent(KEY)}`)).json();
     if (!j.ok) { msg.textContent = j.error; return; }
-    try { sessionStorage.setItem('gp_key', key); } catch (e) {}
+    try { localStorage.setItem(LS, KEY); } catch (e) {}
+    const before = PREV; PREV = {};
     ALL = j.students.map(stat);
-    msg.textContent = `${ALL.length}명 · ${new Date().toLocaleTimeString('ko-KR')} 기준`;
+    ALL.forEach(s => { PREV[s.name] = s.saved ? +s.saved : 0; s.fresh = before[s.name] !== undefined && PREV[s.name] > before[s.name]; });
+    msg.textContent = `${ALL.length}명 · ${new Date().toLocaleTimeString('ko-KR')} 갱신`;
+    document.getElementById('live').hidden = false;
     render();
+    if (!TIMER) TIMER = setInterval(() => { if (!document.hidden) load(false); }, 30000);
   } catch (e) { msg.textContent = '불러오기 실패: 웹앱 주소와 배포 설정(액세스: 모든 사용자)을 확인해 주세요.'; }
 }
 function render() {
-  const classes = ['전체', ...[...new Set(ALL.map(s => s.cls))].sort((a, b) => parseInt(a) - parseInt(b))];
-  let list = ALL.filter(s => CLS === '전체' || s.cls === CLS);
-  list.sort((a, b) => { const x = a[SORT.k] ?? -1, y = b[SORT.k] ?? -1; return (x > y ? 1 : x < y ? -1 : 0) * SORT.d; });
-  const n = list.length || 1;
-  const avgOf = f => Math.round(list.reduce((a, s) => a + f(s), 0) / n * 10) / 10;
+  let list = ALL.filter(s => !Q || s.name.includes(Q));
+  list.sort((a, b) => { const x = a[SORT.k] ?? -1, y = b[SORT.k] ?? -1; return (x > y ? 1 : x < y ? -1 : 0) * SORT.d || b.medalPts - a.medalPts; });
+  const n = ALL.length || 1;
+  const avgOf = f => Math.round(ALL.reduce((a, s) => a + f(s), 0) / n * 10) / 10;
+  const today = new Date().toDateString();
+  const active = ALL.filter(s => s.saved && s.saved.toDateString() === today).length;
+  // 노드별 통과 인원 분포
+  const dist = NODES.map((_, i) => ALL.filter(s => s.p > i).length);
+  const maxD = Math.max(1, ...dist);
   const th = (k, t) => `<th onclick="sortBy('${k}')">${t}${SORT.k === k ? (SORT.d > 0 ? ' ▲' : ' ▼') : ''}</th>`;
   document.getElementById('out').innerHTML = `
   <div class="panel">
-    <div class="row tabs" style="margin-bottom:12px">${classes.map(c => `<button class="${c === CLS ? 'on' : ''}" onclick="CLS='${c}';render()">${c}</button>`).join('')}
-      <span style="flex:1"></span><button class="btn g" onclick="csv()">📥 CSV 내려받기</button></div>
     <div class="tiles">
-      <div class="tile"><span>학생 수</span><b>${list.length}명</b></div>
-      <div class="tile"><span>평균 알아요</span><b>${avgOf(s => s.known)} / ${IDIOMS.length}</b></div>
-      <div class="tile"><span>평균 완료 도장</span><b>${avgOf(s => s.stamps)} / ${SETS}</b></div>
-      <div class="tile"><span>마스터(전 코스 완료)</span><b>${list.filter(s => s.stamps >= SETS).length}명</b></div>
+      <div class="tile"><span>참여 레이서</span><b>${ALL.length}명</b></div>
+      <div class="tile"><span>오늘 학습한 레이서</span><b>${active}명</b></div>
+      <div class="tile"><span>평균 알아요</span><b>${avgOf(s => s.known)}<small style="font-size:14px"> / ${DATA.length}</small></b></div>
+      <div class="tile"><span>하드 코스 진입</span><b>${ALL.filter(s => s.p >= NODES_PER_ZONE).length}명</b></div>
+      <div class="tile"><span>👑 고사성어 마스터</span><b>${ALL.filter(s => s.p >= NODES.length).length}명</b></div>
     </div>
+    <h3 style="margin:16px 0 0">체크포인트별 통과 인원</h3>
+    <div class="dist" style="margin-top:22px">${dist.map((d, i) => `<div style="height:${d / maxD * 100}%;${NODES[i].type !== 'course' ? 'background:linear-gradient(180deg,#b9a3ff,#8b5cf6)' : ''}" title="${NODES[i].label}: ${d}명"><span>${d}</span></div>`).join('')}</div>
+    <div class="dist-l">${NODES.map(nd => `<div>${nd.type === 'course' ? nd.course + 1 : nd.type === 'cp' ? '🚩' : nd.zone ? '👑' : '🏁'}</div>`).join('')}</div>
   </div>
-  <div class="panel scroll">
-    <table><thead><tr>${th('id', '학번')}${th('name', '이름')}${th('known', '알아요')}${th('stamps', '도장')}${th('avg', '평균')}${th('tries', '도전')}${th('days', '학습일')}
-      ${Array.from({ length: SETS }, (_, i) => `<th>코스${i + 1}</th>`).join('')}${th('saved', '마지막 저장')}</tr></thead>
-    <tbody>${list.map(s => `<tr onclick="detail('${esc(s.id)}')">
-      <td>${esc(s.id)}</td><td class="l"><b>${esc(s.name)}</b></td>
-      <td><span class="bar"><i style="width:${s.known / IDIOMS.length * 100}%"></i></span> ${s.known}</td>
-      <td><b>${s.stamps}</b></td><td>${s.avg ?? '-'}</td><td>${s.tries}</td><td>${s.days}</td>
-      ${s.best.map(b => b ? (b.best ? `<td><span class="s s${b.stamp}">${b.best}</span></td>` : `<td class="muted">학습</td>`) : '<td class="muted">·</td>').join('')}
+  <div class="panel">
+    <div class="row" style="margin-bottom:10px">
+      <input class="inp" placeholder="닉네임 검색" value="${esc(Q)}" oninput="Q=this.value;render()" style="min-width:200px">
+      <span style="flex:1"></span>
+      <button class="btn w" onclick="load(false)">🔄 지금 갱신</button>
+      <button class="btn g" onclick="csv()">📥 CSV 내려받기</button>
+    </div>
+    <div class="scroll"><table><thead><tr>
+      <th>순위</th>${th('name', '닉네임')}${th('t', '레벨')}${th('p', '현재 위치')}<th>체크포인트 진행 (코스1→20)</th>
+      ${th('known', '알아요')}${th('medalPts', '🥉🥈🥇🏆')}${th('avg', '평균')}${th('tries', '도전')}${th('days', '학습일')}${th('saved', '마지막 저장')}
+    </tr></thead><tbody>${list.map((s, i) => `<tr onclick="detail(${ALL.indexOf(s)})">
+      <td><b>${i + 1}</b></td>
+      <td class="l"><b>${esc(s.name)}</b> ${s.fresh ? '<span class="new">NEW</span>' : ''}</td>
+      <td><span class="lv">Lv.${s.t + 1}</span> ${TIERS[s.t].name}</td>
+      <td>${s.loc}</td>
+      <td>${dots(s.raw)}</td>
+      <td><span class="bar"><i style="width:${s.known / DATA.length * 100}%"></i></span> ${s.known}</td>
+      <td>${s.m[1]} · ${s.m[2]} · ${s.m[3]} · ${s.m[4]}</td>
+      <td>${s.avg ?? '-'}</td><td>${s.tries}</td><td>${s.days}</td>
       <td class="muted">${s.saved ? s.saved.toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'}</td></tr>`).join('')}
-    </tbody></table>
-    <p class="muted" style="font-size:13px">코스 칸: 최고 점수 (금 90↑ · 은 80↑ · 동 70↑ · 빨강 70 미만) / ‘학습’은 카드 학습만 완료 / 행을 누르면 자세히 보기</p>
+    </tbody></table></div>
+    <div class="legend"><span><i style="background:#d08a4c"></i>동</span><span><i style="background:#b8c2d0"></i>은</span><span><i style="background:#f5b400"></i>금</span><span><i style="background:#8b5cf6"></i>트로피</span><span><i style="background:#9be3ff"></i>학습만 완료</span><span><i style="background:#ffb3bb"></i>도전했지만 70점 미만</span><span>넓은 칸 = 중간 점검·레벨업 테스트</span><span>행을 누르면 자세히</span></div>
   </div>`;
 }
-function sortBy(k) { SORT = { k, d: SORT.k === k ? -SORT.d : (k === 'id' || k === 'name' ? 1 : -1) }; render(); }
-function detail(id) {
-  const s = ALL.find(x => x.id === id), u = s.raw;
-  const wrong = Object.entries(u.wrong || {}).sort((a, b) => b[1] - a[1]).slice(0, 10);
+function dots(u) {
+  return `<span class="dots">${NODES.map((n, i) => {
+    const r = (u.sets || {})[n.id] || {};
+    const c = r.stamp ? DOT[r.stamp] : r.attempts && r.attempts.length ? '#ffb3bb' : r.studied ? '#9be3ff' : DOT[0];
+    return `<i class="${n.type !== 'course' ? 'big' : ''} ${i === NODES_PER_ZONE ? 'gap' : ''}" style="background:${c}" title="${n.label}${r.best ? ' · 최고 ' + r.best + '점' : ''}"></i>`;
+  }).join('')}</span>`;
+}
+function sortBy(k) { SORT = { k, d: SORT.k === k ? -SORT.d : (k === 'name' ? 1 : -1) }; render(); }
+function detail(i) {
+  const s = ALL[i], u = s.raw;
+  const wrong = Object.entries(u.wrong || {}).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  const hard = Object.entries(u.unknown || {}).sort((a, b) => b[1] - a[1]).slice(0, 12);
   const m = document.createElement('div'); m.className = 'modal';
   m.onclick = e => { if (e.target === m) m.remove(); };
-  m.innerHTML = `<div class="panel"><h2 style="margin:0">${esc(s.id)} ${esc(s.name)}</h2>
-    <p class="muted">알아요 ${s.known}개 · 도장 ${s.stamps}개 · 평균 ${s.avg ?? '-'}점 · 학습일 ${s.days}일</p>
-    <h3>❌ 자주 틀린 고사성어</h3><p>${wrong.length ? wrong.map(([w, c]) => `${esc(w)}(${c})`).join(', ') : '없음'}</p>
+  m.innerHTML = `<div class="panel"><div class="row">${racerSVG(s.t, 80)}<div><h2 style="margin:0">${esc(s.name)}</h2>
+    <div class="muted" style="font-weight:700">Lv.${s.t + 1} ${TIERS[s.t].name} · ${s.loc} · 알아요 ${s.known}개 · 학습일 ${s.days}일</div></div></div>
+    <h3>🏁 체크포인트별 기록</h3>
+    <div class="scroll"><table style="min-width:0"><thead><tr><th>체크포인트</th><th>학습</th><th>도전</th><th>최근</th><th>최고</th><th>메달</th></tr></thead><tbody>
+    ${NODES.map((n, idx) => { const r = (u.sets || {})[n.id]; if (!r && idx > s.p) return ''; const a = (r && r.attempts) || [];
+      return `<tr><td class="l">${n.label}</td><td>${n.type === 'course' ? (r && r.studied ? r.studyCount + '회' : '-') : ''}</td><td>${a.length}</td><td>${a.length ? a.at(-1).score : '-'}</td><td><b>${r && r.best ? r.best : '-'}</b></td><td>${r && r.stamp ? MEDALS[r.stamp].icon : ''}</td></tr>`; }).join('')}
+    </tbody></table></div>
+    <h3>❌ 문제에서 자주 틀린 고사성어</h3><p>${wrong.length ? wrong.map(([w, c]) => `${esc(w)}(${c})`).join(', ') : '없음'}</p>
+    <h3>🤔 ‘아직 몰라요’가 많았던 고사성어</h3><p>${hard.length ? hard.map(([w, c]) => `${esc(w)}(${c})`).join(', ') : '없음'}</p>
     <h3>✍️ 만든 문장</h3>${(u.sentences || []).slice(0, 20).map(x => `<div class="sent">${x.ok ? '⭕' : '❌'} <b>[${esc(x.w)}]</b> ${esc(x.s)}</div>`).join('') || '<p class="muted">없음</p>'}
     <button class="btn" style="width:100%;margin-top:12px" onclick="this.closest('.modal').remove()">닫기</button></div>`;
   document.body.appendChild(m);
 }
 function csv() {
-  const head = ['반', '학번', '이름', '알아요', '완료도장', '평균점수', '도전횟수', '학습일', ...Array.from({ length: SETS }, (_, i) => `코스${i + 1}최고`), '마지막저장'];
-  const rows = ALL.filter(s => CLS === '전체' || s.cls === CLS).map(s => [s.cls, s.id, s.name, s.known, s.stamps, s.avg ?? '', s.tries, s.days,
-    ...s.best.map(b => b && b.best ? b.best : ''), s.saved ? s.saved.toLocaleString('ko-KR') : '']);
+  const head = ['닉네임', '레벨', '현재 위치', '진행(26)', '알아요', '동메달', '은메달', '금메달', '트로피', '평균', '도전', '학습일',
+    ...NODES.map(n => n.type === 'course' ? `코스${n.course + 1}` : n.label), '마지막 저장'];
+  const rows = ALL.map(s => [s.name, TIERS[s.t].name, s.loc, s.p, s.known, s.m[1], s.m[2], s.m[3], s.m[4], s.avg ?? '', s.tries, s.days,
+    ...NODES.map(n => ((s.raw.sets || {})[n.id] || {}).best || ''), s.saved ? s.saved.toLocaleString('ko-KR') : '']);
   const text = '﻿' + [head, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' }));
-  a.download = `고사성어그랑프리_${CLS}_${new Date().toISOString().slice(0, 10)}.csv`; a.click();
+  a.download = `고사성어그랑프리_${new Date().toISOString().slice(0, 10)}.csv`; a.click();
 }
-try { const k = sessionStorage.getItem('gp_key'); if (k) { document.getElementById('key').value = k; load(); } } catch (e) {}
+try { const k = localStorage.getItem(LS); if (k) { document.getElementById('key').value = k; start(); } } catch (e) {}
 </script>
 </body>
 </html>
